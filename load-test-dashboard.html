@@ -15170,14 +15170,16 @@
 
     const focusedRouteConfigs = [
       'async-route-async-inner-async-bg-async-task',
+      'async-route-async-inner-sync-bg-sync-task',
       'sync-route-sync-inner-async-bg-async-task',
-      'async-route-async-inner-sync-bg-sync-task'
+      'sync-route-sync-inner-sync-bg-sync-task'
     ];
 
     const focusedRouteLabels = [
       'async/async/async-bg/async-task',
+      'async/async/sync-bg/sync-task',
       'sync/sync/async-bg/async-task',
-      'async/async/sync-bg/sync-task'
+      'sync/sync/sync-bg/sync-task'
     ];
 
     function parseCSV(filePath) {

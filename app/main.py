@@ -1,6 +1,7 @@
 """Main FastAPI application."""
 from fastapi import FastAPI
 from app.routes import router
+from app.metrics import router as metrics_router
 from app.logging_config import setup_logging
 
 # Setup logging
@@ -15,6 +16,7 @@ app = FastAPI(
 
 # Include routes
 app.include_router(router)
+app.include_router(metrics_router)
 
 
 @app.get("/")

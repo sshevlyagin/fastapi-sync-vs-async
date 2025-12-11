@@ -9,6 +9,7 @@ from app.background import (
     async_background_task_wrapping_sync,
     async_background_task_wrapping_async
 )
+from app.metrics import increment_pending_bg_tasks
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -21,6 +22,7 @@ def sync_route_sync_inner_async_bg_sync_task(background_tasks: BackgroundTasks):
     logger.info(f"[sync-route-sync-inner-async-bg-sync-task] Handler executing in thread {thread_id}")
 
     result = sync_inner_function()
+    increment_pending_bg_tasks()
     background_tasks.add_task(sync_background_task)  # async registration of sync task
 
     return {
@@ -38,6 +40,7 @@ def sync_route_sync_inner_async_bg_async_task(background_tasks: BackgroundTasks)
     logger.info(f"[sync-route-sync-inner-async-bg-async-task] Handler executing in thread {thread_id}")
 
     result = sync_inner_function()
+    increment_pending_bg_tasks()
     background_tasks.add_task(async_background_task_wrapping_async)  # async wrapping async
 
     return {
@@ -55,6 +58,7 @@ def sync_route_sync_inner_sync_bg_sync_task(background_tasks: BackgroundTasks):
     logger.info(f"[sync-route-sync-inner-sync-bg-sync-task] Handler executing in thread {thread_id}")
 
     result = sync_inner_function()
+    increment_pending_bg_tasks()
     background_tasks.add_task(sync_background_task)  # sync registration of sync task
 
     return {
@@ -73,6 +77,7 @@ async def async_route_sync_inner_async_bg_async_task(background_tasks: Backgroun
 
     # Calling sync function from async context - will use thread pool
     result = sync_inner_function()
+    increment_pending_bg_tasks()
     background_tasks.add_task(async_background_task_wrapping_async)
 
     return {
@@ -90,6 +95,7 @@ async def async_route_async_inner_async_bg_async_task(background_tasks: Backgrou
     logger.info(f"[async-route-async-inner-async-bg-async-task] Handler executing in thread {thread_id}")
 
     result = await async_inner_function()
+    increment_pending_bg_tasks()
     background_tasks.add_task(async_background_task_wrapping_async)
 
     return {
@@ -107,6 +113,7 @@ async def async_route_async_inner_async_bg_sync_task(background_tasks: Backgroun
     logger.info(f"[async-route-async-inner-async-bg-sync-task] Handler executing in thread {thread_id}")
 
     result = await async_inner_function()
+    increment_pending_bg_tasks()
     background_tasks.add_task(async_background_task_wrapping_sync)  # async wrapping blocking sync
 
     return {
@@ -124,6 +131,7 @@ async def async_route_async_inner_sync_bg_sync_task(background_tasks: Background
     logger.info(f"[async-route-async-inner-sync-bg-sync-task] Handler executing in thread {thread_id}")
 
     result = await async_inner_function()
+    increment_pending_bg_tasks()
     background_tasks.add_task(sync_background_task)
 
     return {

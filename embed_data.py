@@ -162,7 +162,7 @@ def embed_data_in_html(html_path, output_path, data):
 
 def main():
     """Main function."""
-    html_path = Path('load-test-dashboard.html')
+    html_path = Path('results/index.html')
 
     if not html_path.exists():
         print(f"Error: {html_path} not found!")

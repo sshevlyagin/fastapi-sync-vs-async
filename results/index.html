@@ -131,8 +131,123 @@
       text-align: center;
     }
 
+    .toc {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .toc h2 {
+      color: #2c3e50;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 3px solid #3498db;
+      font-size: 1.6em;
+    }
+
+    .toc-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    .toc-section {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 6px;
+      border-left: 4px solid #3498db;
+    }
+
+    .toc-section h3 {
+      color: #2c3e50;
+      font-size: 1.1em;
+      margin-bottom: 10px;
+    }
+
+    .toc-section ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .toc-section li {
+      margin: 5px 0;
+    }
+
+    .toc-section a {
+      color: #3498db;
+      text-decoration: none;
+      transition: all 0.2s;
+      font-size: 0.95em;
+    }
+
+    .toc-section a:hover {
+      color: #2980b9;
+      text-decoration: underline;
+    }
+
+    .toc-locust {
+      background: #f0f8ff;
+      padding: 20px;
+      border-radius: 6px;
+      border: 1px solid #3498db;
+    }
+
+    .toc-locust h3 {
+      color: #2c3e50;
+      font-size: 1.2em;
+      margin-bottom: 15px;
+    }
+
+    .toc-locust-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 10px;
+    }
+
+    .toc-locust-item {
+      background: white;
+      padding: 10px 15px;
+      border-radius: 4px;
+      border: 1px solid #e0e0e0;
+    }
+
+    .toc-locust-item a {
+      color: #16a085;
+      text-decoration: none;
+      font-size: 0.9em;
+      word-break: break-word;
+    }
+
+    .toc-locust-item a:hover {
+      color: #138d75;
+      text-decoration: underline;
+    }
+
+    .user-badge {
+      display: inline-block;
+      background: #3498db;
+      color: white;
+      padding: 2px 8px;
+      border-radius: 3px;
+      font-size: 0.75em;
+      margin-left: 5px;
+      font-weight: 600;
+    }
+
     @media (max-width: 768px) {
       .charts-grid {
+        grid-template-columns: 1fr;
+      }
+      .toc-sections {
+        grid-template-columns: 1fr;
+      }
+      .toc-locust-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -14983,6 +15098,91 @@
 };
   </script>
   <h1>FastAPI Sync vs Async Load Test Results</h1>
+
+  <div class="toc">
+    <h2>Table of Contents</h2>
+
+    <div class="toc-sections">
+      <div class="toc-section">
+        <h3>Dashboard Sections</h3>
+        <ul>
+          <li><a href="#users-10">10 Concurrent Users</a></li>
+          <li><a href="#users-40">40 Concurrent Users</a></li>
+          <li><a href="#users-100">100 Concurrent Users</a></li>
+          <li><a href="#focused-100">100 Users - Key Route Comparison</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="toc-locust">
+      <h3>Locust Detailed Reports</h3>
+      <div class="toc-locust-grid">
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-async-bg-async-task-10users.html">async/async/async-bg/async-task <span class="user-badge">10</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-async-bg-async-task-40users.html">async/async/async-bg/async-task <span class="user-badge">40</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-async-bg-async-task-100users.html">async/async/async-bg/async-task <span class="user-badge">100</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-async-bg-sync-task-10users.html">async/async/async-bg/sync-task <span class="user-badge">10</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-async-bg-sync-task-40users.html">async/async/async-bg/sync-task <span class="user-badge">40</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-async-bg-sync-task-100users.html">async/async/async-bg/sync-task <span class="user-badge">100</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-sync-bg-sync-task-10users.html">async/async/sync-bg/sync-task <span class="user-badge">10</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-sync-bg-sync-task-40users.html">async/async/sync-bg/sync-task <span class="user-badge">40</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-async-inner-sync-bg-sync-task-100users.html">async/async/sync-bg/sync-task <span class="user-badge">100</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-sync-inner-async-bg-async-task-10users.html">async/sync/async-bg/async-task <span class="user-badge">10</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-sync-inner-async-bg-async-task-40users.html">async/sync/async-bg/async-task <span class="user-badge">40</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="async-route-sync-inner-async-bg-async-task-100users.html">async/sync/async-bg/async-task <span class="user-badge">100</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-async-bg-async-task-10users.html">sync/sync/async-bg/async-task <span class="user-badge">10</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-async-bg-async-task-40users.html">sync/sync/async-bg/async-task <span class="user-badge">40</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-async-bg-async-task-100users.html">sync/sync/async-bg/async-task <span class="user-badge">100</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-async-bg-sync-task-10users.html">sync/sync/async-bg/sync-task <span class="user-badge">10</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-async-bg-sync-task-40users.html">sync/sync/async-bg/sync-task <span class="user-badge">40</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-async-bg-sync-task-100users.html">sync/sync/async-bg/sync-task <span class="user-badge">100</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-sync-bg-sync-task-10users.html">sync/sync/sync-bg/sync-task <span class="user-badge">10</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-sync-bg-sync-task-40users.html">sync/sync/sync-bg/sync-task <span class="user-badge">40</span></a>
+        </div>
+        <div class="toc-locust-item">
+          <a href="sync-route-sync-inner-sync-bg-sync-task-100users.html">sync/sync/sync-bg/sync-task <span class="user-badge">100</span></a>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <div id="loading" class="loading">Loading test data...</div>
   <div id="error" style="display: none;"></div>

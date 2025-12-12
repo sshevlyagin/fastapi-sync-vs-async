@@ -238,6 +238,98 @@
       font-weight: 600;
     }
 
+    .intro {
+      background: white;
+      border-radius: 8px;
+      padding: 30px;
+      margin-bottom: 40px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      max-width: 1200px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .intro h2 {
+      color: #2c3e50;
+      margin-top: 30px;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #3498db;
+      font-size: 1.5em;
+    }
+
+    .intro h2:first-child {
+      margin-top: 0;
+    }
+
+    .intro p {
+      margin-bottom: 15px;
+      color: #555;
+      line-height: 1.8;
+    }
+
+    .intro strong {
+      color: #2c3e50;
+      font-weight: 600;
+    }
+
+    .intro table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      background: white;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .intro table th,
+    .intro table td {
+      padding: 12px;
+      text-align: left;
+      border: 1px solid #e0e0e0;
+    }
+
+    .intro table th {
+      background: #3498db;
+      color: white;
+      font-weight: 600;
+    }
+
+    .intro table tr:nth-child(even) {
+      background: #f8f9fa;
+    }
+
+    .intro table code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.9em;
+      font-family: 'Courier New', monospace;
+    }
+
+    .intro ul {
+      margin: 15px 0;
+      padding-left: 25px;
+    }
+
+    .intro ul li {
+      margin: 10px 0;
+      line-height: 1.8;
+      color: #555;
+    }
+
+    .intro ul ul {
+      margin: 5px 0;
+    }
+
+    .intro code {
+      background: #f0f0f0;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 0.9em;
+      font-family: 'Courier New', monospace;
+      color: #c7254e;
+    }
+
     @media (max-width: 768px) {
       .charts-grid {
         grid-template-columns: 1fr;
@@ -15099,6 +15191,115 @@
 
 
   <h1>FastAPI Sync vs Async Load Test Results</h1>
+
+  <div class="intro">
+    <h2>Intro</h2>
+    <p>Demonstrates the interaction patterns between FastAPI sync/async routes, inner functions, and background tasks. FastAPI (via Starlette) uses a default thread pool of 40 workers for executing sync functions called from async contexts. This demonstration shows what happens when concurrent requests exceed this limit.</p>
+
+    <p>This project has 7 routes that mix sync and async routes and background tasks.</p>
+
+    <h2>Route Matrix</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Endpoint</th>
+          <th>Pattern (handler / inner / bg-task)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>/sync-route-sync-inner-async-bg-sync-task</code></td>
+          <td><code>def</code> / sync / sync-bg-task</td>
+        </tr>
+        <tr>
+          <td><code>/sync-route-sync-inner-async-bg-async-task</code></td>
+          <td><code>def</code> / sync / async-bg-task</td>
+        </tr>
+        <tr>
+          <td><code>/sync-route-sync-inner-sync-bg-sync-task</code></td>
+          <td><code>def</code> / sync / sync-bg-task</td>
+        </tr>
+        <tr>
+          <td><code>/async-route-sync-inner-async-bg-async-task</code></td>
+          <td><code>async</code> / <strong>sync (blocking call)</strong> / async-bg-task</td>
+        </tr>
+        <tr>
+          <td><code>/async-route-async-inner-async-bg-async-task</code></td>
+          <td><code>async</code> / async / async-bg-task</td>
+        </tr>
+        <tr>
+          <td><code>/async-route-async-inner-async-bg-sync-task</code></td>
+          <td><code>async</code> / async / <strong>async-bg-task that blocks</strong></td>
+        </tr>
+        <tr>
+          <td><code>/async-route-async-inner-sync-bg-sync-task</code></td>
+          <td><code>async</code> / async / sync-bg-task</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p><strong>What each request does (so you can reason about timings)</strong></p>
+    <ul>
+      <li><strong>Inner work</strong>:
+        <ul>
+          <li><code>sync_inner_function()</code> blocks for ~200ms (<code>time.sleep(0.2)</code>)</li>
+          <li><code>async_inner_function()</code> yields for ~200ms (<code>await asyncio.sleep(0.2)</code>)</li>
+        </ul>
+      </li>
+      <li><strong>Background work</strong> (scheduled via FastAPI/Starlette <code>BackgroundTasks</code>):
+        <ul>
+          <li><code>sync_background_task()</code> blocks for ~10s (<code>time.sleep(10)</code>)</li>
+          <li><code>async_background_task_wrapping_async()</code> yields for ~10s (<code>await asyncio.sleep(10)</code>)</li>
+          <li><code>async_background_task_wrapping_sync()</code> <strong>blocks the event loop for ~10s</strong> (<code>time.sleep(10)</code> inside <code>async def</code>) — intentionally "bad" to demonstrate failure mode</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2>What Did We Learn</h2>
+    <ul>
+      <li><strong>"Sync vs async route" isn't the whole story</strong>
+        <ul>
+          <li>With <strong>non-blocking inner + non-blocking background work</strong>, sync and async routes look similar at 100 users:
+            <ul>
+              <li><code>async-route-async-inner-async-bg-async-task</code>: ~<strong>184 req/s</strong>, ~<strong>206ms</strong> avg</li>
+              <li><code>sync-route-sync-inner-async-bg-async-task</code>: ~<strong>178 req/s</strong>, ~<strong>221ms</strong> avg</li>
+              <li><code>async-route-async-inner-sync-bg-sync-task</code>: ~<strong>184 req/s</strong>, ~<strong>206ms</strong> avg</li>
+            </ul>
+          </li>
+          <li>However, the sync route leads to much higher CPU utilization 22.4% vs 16.4% from the fast thread switching between requests.</li>
+          <li>And the sync background task lead to slightly higher CPU utilization 19.2% vs 16.4%  and more memory usage 90.2MB vs 70MB because of the backlog of slow background tasks that got queued up.</li>
+        </ul>
+      </li>
+      <li><strong>Calling blocking code from an <code>async def</code> handler can halt the whole server</strong>
+        <ul>
+          <li><code>async-route-sync-inner-async-bg-async-task</code> calls <code>sync_inner_function()</code> directly (which does <code>time.sleep(0.2)</code>), so it <strong>blocks the event loop</strong>.</li>
+          <li>Result: throughput collapses to ~<strong>5 req/s</strong> and median latency jumps to ~<strong>3.3s</strong> even at high concurrency.</li>
+        </ul>
+      </li>
+      <li><strong>Background tasks can starve the thread pool</strong>
+        <ul>
+          <li><strong>Sync endpoints + sync background tasks</strong> share the same AnyIO thread pool (default capacity <strong>40</strong>).</li>
+          <li>With <code>sync-route-*-sync-task</code>, the 10s background work ties up the pool, so requests wait a long time just to start:
+            <ul>
+              <li>Example (<code>sync-route-sync-inner-async-bg-sync-task</code>, 100 users): ~<strong>8.5 req/s</strong>, median ~<strong>8.8s</strong></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+      <li><strong>Fast responses can hide a massive background-work backlog</strong>
+        <ul>
+          <li><code>async-route-async-inner-sync-bg-sync-task</code> keeps request latency low (~<strong>206ms</strong> avg at 100 users), but it queues <strong>thousands</strong> of 10s sync background tasks onto the 40-thread pool.</li>
+          <li>In the 100-user run it finished the 30s test with <strong>~5.4k pending</strong> background tasks; after waiting 60s it still had <strong>~5.2k pending</strong> (roughly <strong>~22 minutes</strong> to drain at 40 threads × 10s/task).</li>
+        </ul>
+      </li>
+      <li><strong>"Async" background tasks that do blocking work are catastrophic</strong>
+        <ul>
+          <li><code>async-route-async-inner-async-bg-sync-task</code> uses an <code>async def</code> background task that calls <code>time.sleep(10)</code>, which <strong>blocks the event loop</strong>.</li>
+          <li>In practice the app becomes largely unresponsive (even <code>/metrics</code> times out), and the Locust run produced no meaningful request stats.</li>
+        </ul>
+      </li>
+    </ul>
+  </div>
 
   <div class="toc">
     <h2>Table of Contents</h2>

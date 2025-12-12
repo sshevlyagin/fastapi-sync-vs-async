@@ -37,8 +37,8 @@ def read_csv_to_dict(file_path):
 
 
 def collect_all_data():
-    """Collect all CSV data from the results directory."""
-    results_dir = Path('results')
+    """Collect all CSV data from the docs directory."""
+    results_dir = Path('docs')
 
     if not results_dir.exists():
         print(f"Error: {results_dir} directory not found!")
@@ -93,6 +93,15 @@ def embed_data_in_html(html_path, output_path, data):
     const EMBEDDED_DATA = {data_json};
   </script>"""
 
+    # Remove any existing embedded-data script blocks to avoid duplicates
+    import re
+    html_content = re.sub(
+        r'  <script id="embedded-data">.*?</script>',
+        '',
+        html_content,
+        flags=re.DOTALL
+    )
+
     # Find the position right after <body> tag and insert the data
     body_pos = html_content.find('<body>')
     if body_pos == -1:
@@ -101,50 +110,6 @@ def embed_data_in_html(html_path, output_path, data):
 
     body_end_pos = html_content.find('>', body_pos) + 1
     html_content = html_content[:body_end_pos] + embedded_data_script + html_content[body_end_pos:]
-
-    # Replace the parseCSV function to use embedded data instead
-    old_parse_csv = """    function parseCSV(filePath) {
-      return new Promise((resolve, reject) => {
-        Papa.parse(filePath, {
-          download: true,
-          header: true,
-          dynamicTyping: true,
-          skipEmptyLines: true,
-          complete: (results) => resolve(results.data),
-          error: (error) => reject(error)
-        });
-      });
-    }"""
-
-    new_parse_csv = """    function parseCSV(filePath) {
-      // Use embedded data instead of fetching CSV files
-      return new Promise((resolve, reject) => {
-        // Extract the key from the file path (e.g., "docs/route-10users_stats.csv" -> "route-10users")
-        const match = filePath.match(/results\\/(.+?)_(stats|resources)\\.csv$/);
-        if (!match) {
-          reject(new Error(`Invalid file path format: ${filePath}`));
-          return;
-        }
-
-        const key = match[1];
-        const type = match[2];
-
-        if (!EMBEDDED_DATA[key]) {
-          reject(new Error(`No embedded data found for: ${key}`));
-          return;
-        }
-
-        const data = EMBEDDED_DATA[key][type];
-        if (!data) {
-          reject(new Error(`No ${type} data found for: ${key}`));
-          return;
-        }
-
-        resolve(data);
-      });
-    }"""
-
-    html_content = html_content.replace(old_parse_csv, new_parse_csv)
 
     # Remove the PapaParse script tag since we don't need it anymore
     # Actually, let's keep it commented out in case someone wants to revert

@@ -22,12 +22,12 @@ poetry run uvicorn app.main:app --reload
 
 Test with 40 concurrent users (within thread pool limit):
 ```bash
-poetry run locust -f tests/locustfile.py --headless -u 40 -r 10 -t 30s --html results/route-X-40users.html
+poetry run locust -f tests/locustfile.py --headless -u 40 -r 10 -t 30s --html docs/route-X-40users.html
 ```
 
 Test with 100 concurrent users (exceeds thread pool limit):
 ```bash
-poetry run locust -f tests/locustfile.py --headless -u 100 -r 20 -t 30s --html results/route-X-100users.html
+poetry run locust -f tests/locustfile.py --headless -u 100 -r 20 -t 30s --html docs/route-X-100users.html
 ```
 
 ## Routes

@@ -66,7 +66,7 @@ do
 
     # Start resource monitor in background with the correct PID
     poetry run python resource_monitor.py \
-        --output "results/${route_name}-10users_resources.csv" \
+        --output "docs/${route_name}-10users_resources.csv" \
         --test-duration 30 \
         --interval 1 \
         --pid $UVICORN_PID &
@@ -80,8 +80,8 @@ do
         -r 5 \
         -t 30s \
         --only-summary \
-        --html "results/${route_name}-10users.html" \
-        --csv "results/${route_name}-10users" \
+        --html "docs/${route_name}-10users.html" \
+        --csv "docs/${route_name}-10users" \
         ${class_name}
 
     # Wait for resource monitor to finish (it waits for bg tasks)
@@ -105,7 +105,7 @@ do
 
     # Start resource monitor in background with the correct PID
     poetry run python resource_monitor.py \
-        --output "results/${route_name}-40users_resources.csv" \
+        --output "docs/${route_name}-40users_resources.csv" \
         --test-duration 30 \
         --interval 1 \
         --pid $UVICORN_PID &
@@ -119,8 +119,8 @@ do
         -r 10 \
         -t 30s \
         --only-summary \
-        --html "results/${route_name}-40users.html" \
-        --csv "results/${route_name}-40users" \
+        --html "docs/${route_name}-40users.html" \
+        --csv "docs/${route_name}-40users" \
         ${class_name}
 
     # Wait for resource monitor to finish (it waits for bg tasks)
@@ -144,7 +144,7 @@ do
 
     # Start resource monitor in background with the correct PID
     poetry run python resource_monitor.py \
-        --output "results/${route_name}-100users_resources.csv" \
+        --output "docs/${route_name}-100users_resources.csv" \
         --test-duration 30 \
         --interval 1 \
         --pid $UVICORN_PID &
@@ -158,8 +158,8 @@ do
         -r 20 \
         -t 30s \
         --only-summary \
-        --html "results/${route_name}-100users.html" \
-        --csv "results/${route_name}-100users" \
+        --html "docs/${route_name}-100users.html" \
+        --csv "docs/${route_name}-100users" \
         ${class_name}
 
     # Wait for resource monitor to finish (it waits for bg tasks)
@@ -173,5 +173,5 @@ done
 echo ""
 echo "=========================================="
 echo "All tests completed!"
-echo "Results available in results/"
+echo "Results available in docs/"
 echo "=========================================="

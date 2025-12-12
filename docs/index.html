@@ -15385,7 +15385,7 @@
     function parseCSV(filePath) {
       // Use embedded data instead of fetching CSV files
       return new Promise((resolve, reject) => {
-        // Extract the key from the file path (e.g., "results/route-10users_stats.csv" -> "route-10users")
+        // Extract the key from the file path (e.g., "docs/route-10users_stats.csv" -> "route-10users")
         const match = filePath.match(/results\/(.+?)_(stats|resources)\.csv$/);
         if (!match) {
           reject(new Error(`Invalid file path format: ${filePath}`));
@@ -15493,8 +15493,8 @@
         data[users] = [];
 
         for (const route of routeConfigs) {
-          const statsFile = `results/${route}-${users}users_stats.csv`;
-          const resourcesFile = `results/${route}-${users}users_resources.csv`;
+          const statsFile = `docs/${route}-${users}users_stats.csv`;
+          const resourcesFile = `docs/${route}-${users}users_resources.csv`;
 
           try {
             const stats = await parseCSV(statsFile);
@@ -15962,8 +15962,8 @@
       const users = 100;
 
       for (const route of focusedRouteConfigs) {
-        const statsFile = `results/${route}-${users}users_stats.csv`;
-        const resourcesFile = `results/${route}-${users}users_resources.csv`;
+        const statsFile = `docs/${route}-${users}users_stats.csv`;
+        const resourcesFile = `docs/${route}-${users}users_resources.csv`;
 
         try {
           const stats = await parseCSV(statsFile);

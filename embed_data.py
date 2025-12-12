@@ -119,7 +119,7 @@ def embed_data_in_html(html_path, output_path, data):
     new_parse_csv = """    function parseCSV(filePath) {
       // Use embedded data instead of fetching CSV files
       return new Promise((resolve, reject) => {
-        // Extract the key from the file path (e.g., "results/route-10users_stats.csv" -> "route-10users")
+        // Extract the key from the file path (e.g., "docs/route-10users_stats.csv" -> "route-10users")
         const match = filePath.match(/results\\/(.+?)_(stats|resources)\\.csv$/);
         if (!match) {
           reject(new Error(`Invalid file path format: ${filePath}`));
@@ -162,7 +162,7 @@ def embed_data_in_html(html_path, output_path, data):
 
 def main():
     """Main function."""
-    html_path = Path('results/index.html')
+    html_path = Path('docs/index.html')
 
     if not html_path.exists():
         print(f"Error: {html_path} not found!")
